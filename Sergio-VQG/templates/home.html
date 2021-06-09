@@ -1,0 +1,68 @@
+<html>
+<head>
+    <title>CBIR Project - 18BCE1076</title>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/upload.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/common.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="View">
+        <h1 class="Banner">Sergio - Question Generator</h1>
+        <div class="split left">
+            <form id="upload-file" method="post" enctype="multipart/form-data">
+                    <input id = "upload" type = "file" name = "fileupload" accept="image/png, image/gif, image/jpeg" />
+                    <p><b>Drag your file here or click in this area.</b></p>
+                    <button id="upload-file-btn" type="button">Upload</button>
+            </form>
+        </div>
+          
+        <div class="split right">
+            <div class="centered">
+                <img id="im" src="#" alt="your image" width="600" height="400"/><br>
+                <h2 id="output"></h1>
+            </div>
+          </div>
+    </div>
+    <script>
+        const imgInp = document.getElementById("upload");
+        const p = document.getElementById("output");
+        const im = document.getElementById("im");
+        $(document).ready(function(){
+            $("#im").css("visibility", "hidden");
+        });
+        $("#upload").change(function(){
+            const [file] = imgInp.files
+            if (file) {
+                im.src = URL.createObjectURL(file)
+                $("#im").css("visibility", "visible");
+            }
+            else{
+                $("#im").css("visibility", "hidden"); 
+            }
+        });
+        $('#upload-file-btn').click(function() {
+        var form_data = new FormData($('#upload-file')[0]);
+        $('form p').text("File is being processed!");
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:5000/sergio",
+            data: form_data,
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function(data) {
+                console.log(data);
+                p.innerHTML = data;
+                $('form p').text("File processed! Output is on the right.");
+            },
+        });
+    });
+     $('form input').change(function () {
+        $('form p').text(this.files.length + " file selected");
+    });
+    </script>
+</body>
+</html>
